@@ -1,0 +1,22 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+configurations {
+    provided
+}
+
+sourceSets.main.compileClasspath += configurations.provided
+
+idea {
+    module{
+        scopes.PROVIDED.plus += [configurations.provided]
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+jar {
+    exclude 'com/wrbug/componentrouter/ComponentRouterFinder*'
+}
+sourceCompatibility = "7"
+targetCompatibility = "7"

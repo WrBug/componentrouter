@@ -1,0 +1,1 @@
+include ':sample', ':component_router_compile', ':component_router'
