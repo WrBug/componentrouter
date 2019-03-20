@@ -6,7 +6,7 @@ public class MethodInfo {
     private String returnType;
     private String methodName;
     private String desc;
-    private String[] argType;
+    private String[] argType = new String[0];
 
     public MethodInfo() {
     }

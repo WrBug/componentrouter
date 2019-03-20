@@ -1,0 +1,26 @@
+apply plugin: 'groovy'
+
+def GRADLE_VERSION='3.2.1'
+dependencies {
+    implementation localGroovy()
+    implementation gradleApi()
+    implementation "com.android.tools.build:gradle:$GRADLE_VERSION"
+    implementation "com.android.tools.build:gradle-api:$GRADLE_VERSION"
+//    compile "com.android.tools.build:gradle-core:$GRADLE_VERSION"
+    implementation "com.android.tools.build:builder:$GRADLE_VERSION"
+    implementation 'org.javassist:javassist:3.24.1-GA'
+}
+
+apply plugin: 'maven'
+group = 'com.wrbug.componentrouter'
+version = '1.0.0'
+project.archivesBaseName = 'gradle'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //本地的Maven地址设置为D:/repos
+            repository(url: uri('../repo'))
+        }
+    }
+}

@@ -26,8 +26,8 @@ public abstract class ElementGenerator implements Generator {
         String qualifiedName = mElement.getQualifiedName().toString();
         String packageName = qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
         String className = qualifiedName.substring(packageName.length() + 1);
-        JavaFile javaFile = JavaFile.builder(packageName, onCreateTypeSpec(mElement, packageName, className)).build();
         try {
+            JavaFile javaFile = JavaFile.builder(packageName, onCreateTypeSpec(mElement, packageName, className)).build();
             javaFile.writeTo(mFiler);
         } catch (Exception e) {
             e.printStackTrace();

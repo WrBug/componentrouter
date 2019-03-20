@@ -3,6 +3,7 @@ package com.wrbug.componentrouter.componentroutercompile;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.wrbug.componentrouter.ComponentRouterProxy;
 import com.wrbug.componentrouter.MethodRouter;
@@ -48,8 +49,10 @@ public class ComponentRouterGenerator extends ElementGenerator {
                 try {
                     String str = enclosedElement.toString();
                     str = str.substring(str.indexOf("(") + 1, str.indexOf(")"));
-                    String[] argTypes = str.split(",");
-                    methodInfo.setArgType(argTypes);
+                    if (!str.isEmpty()) {
+                        String[] argTypes = str.split(",");
+                        methodInfo.setArgType(argTypes);
+                    }
                     Object type = typeMirror.getClass().getDeclaredField("restype").get(typeMirror);
                     methodInfo.setReturnType(type.toString());
                 } catch (IllegalAccessException e) {
@@ -57,8 +60,6 @@ public class ComponentRouterGenerator extends ElementGenerator {
                 } catch (NoSuchFieldException e) {
                     e.printStackTrace();
                 }
-                System.out.println(enclosedElement.toString());
-                System.out.println(methodInfo);
                 methodInfo.setDesc(annotation.javaDocDesc());
                 map.put(annotation.value(), methodInfo);
             }
@@ -107,16 +108,10 @@ public class ComponentRouterGenerator extends ElementGenerator {
             javaDoc.append("name: ").append(methodName).append("\n");
             String s = Arrays.toString(methodInfo.getArgType());
             javaDoc.append("call: ").append("{@link ").append(className).append("#").append(methodInfo.getMethodName()).append("(").append(s.substring(1, s.length() - 1)).append(")}\n");
-            System.out.println("hehe1111");
             javaDoc.append("desc: ").append(methodInfo.getDesc()).append("\n");
             methodBuilder.beginControlFlow("if($L.equals($S))", ARG_NAMES[0], methodName);
-//            builder.append("\nif ( ").append(ARG_NAMES[0]).append("          if (!methodInfo.getReturnType().equals("void")) {
-////                builder.append("return ");
-////            }.equals(\"").append(methodName).append("\") ){\n\t");
-//
             StringBuilder argBuilder = new StringBuilder();
             String[] argTypes = methodInfo.getArgType();
-            System.out.println("hehe");
             for (int i = 0; i < argTypes.length; i++) {
                 String argType = argTypes[i];
                 javaDoc.append("argType").append(i).append(": {@link ").append(argType).append("}\n");
@@ -148,21 +143,51 @@ public class ComponentRouterGenerator extends ElementGenerator {
         for (Map.Entry<String, String> entry : arrConvertMap.entrySet()) {
             String methodName = entry.getKey();
             String type = entry.getValue();
-            String packageName = type.substring(0, type.lastIndexOf("."));
-            String className = type.replace(packageName, "").replace(".", "").replace("[]", "");
-            ClassName name = ClassName.get(packageName, className);
-            ArrayTypeName arrayTypeName = ArrayTypeName.of(name);
+
+            TypeName typeName = getArrTypename(type);
+            ArrayTypeName arrayTypeName = ArrayTypeName.of(typeName);
             System.out.println(arrayTypeName);
             MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(methodName)
                     .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
                     .addParameter(Object[].class, "objs")
                     .returns(arrayTypeName)
-                    .addStatement("$T arr=new $T[$L]", arrayTypeName, name, "objs.length");
+                    .addStatement("$T arr=new $T[$L]", arrayTypeName, typeName, "objs.length");
             methodBuilder.beginControlFlow("for(int i = 0;i<objs.length;i++)")
-                    .addStatement("arr[i]=($T)objs[i]", name)
+                    .addStatement("arr[i]=($T)objs[i]", typeName)
                     .endControlFlow();
             methodBuilder.addStatement("return arr");
             builder.addMethod(methodBuilder.build());
         }
+    }
+
+    private TypeName getArrTypename(String type) {
+        int index = type.lastIndexOf(".");
+        if (index == -1) {
+            type = type.replace("[]", "").toLowerCase();
+            switch (type) {
+                case "short":
+                    return TypeName.SHORT;
+                case "int":
+                    return TypeName.INT;
+                case "long":
+                    return TypeName.LONG;
+                case "float":
+                    return TypeName.FLOAT;
+                case "double":
+                    return TypeName.DOUBLE;
+                case "char":
+                    return TypeName.CHAR;
+                case "byte":
+                    return TypeName.BYTE;
+                case "boolean":
+                    return TypeName.BOOLEAN;
+                default:
+                    return TypeName.INT;
+            }
+        }
+        String packageName = type.substring(0, index);
+        String className = type.replace(packageName, "").replace(".", "").replace("[]", "");
+        ClassName name = ClassName.get(packageName, className);
+        return name;
     }
 }

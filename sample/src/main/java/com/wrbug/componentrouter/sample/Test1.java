@@ -9,7 +9,7 @@ import com.wrbug.componentrouter.ObjectRoute;
 import java.util.Arrays;
 
 @ObjectRoute()
-public class Test {
+public class Test1 {
     @MethodRouter("test")
     void test(String aa, int a,String... eeee) {
         Log.i("aaaa", aa);
