@@ -1,4 +1,4 @@
-package com.wrbug.componentrouter.componentroutercompile;
+package com.wrbug.componentrouter.componentroutercompile.generator;
 
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
@@ -6,8 +6,11 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.wrbug.componentrouter.ComponentRouterProxy;
-import com.wrbug.componentrouter.MethodRouter;
-import com.wrbug.componentrouter.ObjectRoute;
+import com.wrbug.componentrouter.annotation.MethodRouter;
+import com.wrbug.componentrouter.componentroutercompile.MethodInfo;
+import com.wrbug.componentrouter.componentroutercompile.TypeNameUtils;
+import com.wrbug.componentrouter.componentroutercompile.util.Log;
+import com.wrbug.componentrouter.componentroutercompile.util.MD5;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,22 +25,20 @@ import javax.lang.model.type.TypeMirror;
 
 import static com.wrbug.componentrouter.componentroutercompile.Constant.*;
 
-public class ComponentRouterGenerator extends ElementGenerator {
+public class MethodRouterGenerator extends ElementGenerator {
 
 
-    public ComponentRouterGenerator(Filer filer) {
-        super(filer);
+    public MethodRouterGenerator(Filer filer, Log log) {
+        super(filer, log);
     }
 
     @Override
     public TypeSpec onCreateTypeSpec(TypeElement element, String packageName, String className) {
-        ObjectRoute objectRoute = element.getAnnotation(ObjectRoute.class);
-        String path = objectRoute.value();
         ClassName routeType = ClassName.get(packageName, className);
-        TypeSpec.Builder builder = TypeSpec.classBuilder(className + SUFFIX)
+        TypeSpec.Builder builder = TypeSpec.classBuilder(className + PROXY_SUFFIX)
                 .addSuperinterface(ComponentRouterProxy.class)
                 .addModifiers(Modifier.PUBLIC)
-                .addField(routeType, FIELD_NAME, Modifier.PRIVATE);
+                .addField(routeType, PROXY_FIELD_NAME, Modifier.PRIVATE);
         List<? extends Element> enclosedElements = element.getEnclosedElements();
         Map<String, MethodInfo> map = new HashMap<>();
         for (Element enclosedElement : enclosedElements) {
@@ -75,12 +76,12 @@ public class ComponentRouterGenerator extends ElementGenerator {
         MethodSpec.Builder methodBuilder = MethodSpec.constructorBuilder()
                 .addParameter(routeType, "obj")
                 .addModifiers(Modifier.PUBLIC)
-                .addCode(FIELD_NAME + "=obj;\n");
+                .addCode(PROXY_FIELD_NAME + "=obj;\n");
         builder.addMethod(methodBuilder.build());
     }
 
     private void addIsForMethod(TypeSpec.Builder builder, ClassName routeType) {
-        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(METHID_IS)
+        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(METHOD_IS)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                 .returns(boolean.class)
                 .addParameter(Object.class, "obj")
@@ -89,17 +90,11 @@ public class ComponentRouterGenerator extends ElementGenerator {
     }
 
     private void addCallMethod(TypeSpec.Builder builder, String className, Map<String, MethodInfo> map) {
-        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(METHID_CALL).addModifiers(Modifier.PUBLIC);
+        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(METHOD_CALL).addModifiers(Modifier.PUBLIC);
         methodBuilder.addParameter(String.class, ARG_NAMES[0], Modifier.FINAL).varargs();
         methodBuilder.addParameter(Object[].class, ARG_NAMES[1], Modifier.FINAL).varargs();
         methodBuilder.addAnnotation(Override.class);
         methodBuilder.returns(Object.class);
-        addCode(builder, methodBuilder, className, map);
-        builder.addMethod(methodBuilder.build());
-    }
-
-    private void addCode(TypeSpec.Builder builder, MethodSpec.Builder methodBuilder, String className, Map<String, MethodInfo> map) {
-//        StringBuilder builder = new StringBuilder();
         StringBuilder javaDoc = new StringBuilder();
         Map<String, String> arrConvertMap = new HashMap<>();
         for (Map.Entry<String, MethodInfo> entry : map.entrySet()) {
@@ -130,12 +125,13 @@ public class ComponentRouterGenerator extends ElementGenerator {
                 argBuilder.deleteCharAt(argBuilder.length() - 1);
             }
             javaDoc.append("returnType: ").append(methodInfo.getReturnType()).append("\n\n----------------------\n\n");
-//            builder.append(FIELD_NAME).append(".").append(methodInfo.getMethodName()).append("(").append(argBuilder).append(");\n}");
-            methodBuilder.addStatement(FIELD_NAME + "." + methodInfo.getMethodName() + "(" + argBuilder.toString() + ")");
+//            builder.append(PROXY_FIELD_NAME).append(".").append(methodInfo.getMethodName()).append("(").append(argBuilder).append(");\n}");
+            methodBuilder.addStatement(PROXY_FIELD_NAME + "." + methodInfo.getMethodName() + "(" + argBuilder.toString() + ")");
             methodBuilder.endControlFlow();
         }
         methodBuilder.addCode("\nreturn null;\n");
         methodBuilder.addJavadoc(javaDoc.toString());
+        builder.addMethod(methodBuilder.build());
         addArrConvertMethod(builder, arrConvertMap);
     }
 
@@ -144,14 +140,14 @@ public class ComponentRouterGenerator extends ElementGenerator {
             String methodName = entry.getKey();
             String type = entry.getValue();
 
-            TypeName typeName = getArrTypename(type);
+            TypeName typeName = TypeNameUtils.getTypeName(type.replace("[]", ""));
             ArrayTypeName arrayTypeName = ArrayTypeName.of(typeName);
             System.out.println(arrayTypeName);
             MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(methodName)
                     .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
                     .addParameter(Object[].class, "objs")
                     .returns(arrayTypeName)
-                    .addStatement("$T arr=new $T[$L]", arrayTypeName, typeName, "objs.length");
+                    .addStatement("$T arr=new $T[objs.length]", arrayTypeName, typeName);
             methodBuilder.beginControlFlow("for(int i = 0;i<objs.length;i++)")
                     .addStatement("arr[i]=($T)objs[i]", typeName)
                     .endControlFlow();
@@ -160,34 +156,4 @@ public class ComponentRouterGenerator extends ElementGenerator {
         }
     }
 
-    private TypeName getArrTypename(String type) {
-        int index = type.lastIndexOf(".");
-        if (index == -1) {
-            type = type.replace("[]", "").toLowerCase();
-            switch (type) {
-                case "short":
-                    return TypeName.SHORT;
-                case "int":
-                    return TypeName.INT;
-                case "long":
-                    return TypeName.LONG;
-                case "float":
-                    return TypeName.FLOAT;
-                case "double":
-                    return TypeName.DOUBLE;
-                case "char":
-                    return TypeName.CHAR;
-                case "byte":
-                    return TypeName.BYTE;
-                case "boolean":
-                    return TypeName.BOOLEAN;
-                default:
-                    return TypeName.INT;
-            }
-        }
-        String packageName = type.substring(0, index);
-        String className = type.replace(packageName, "").replace(".", "").replace("[]", "");
-        ClassName name = ClassName.get(packageName, className);
-        return name;
-    }
 }

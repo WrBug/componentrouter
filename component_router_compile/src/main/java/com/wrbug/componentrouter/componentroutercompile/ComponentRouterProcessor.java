@@ -1,7 +1,11 @@
 package com.wrbug.componentrouter.componentroutercompile;
 
 import com.google.auto.service.AutoService;
-import com.wrbug.componentrouter.ObjectRoute;
+import com.wrbug.componentrouter.annotation.ObjectRoute;
+import com.wrbug.componentrouter.componentroutercompile.generator.FinderGenerator;
+import com.wrbug.componentrouter.componentroutercompile.generator.MethodRouterGenerator;
+import com.wrbug.componentrouter.componentroutercompile.generator.ObjectRouterGenerator;
+import com.wrbug.componentrouter.componentroutercompile.util.Log;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -52,12 +56,15 @@ public class ComponentRouterProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         log.printMessage("process..........");
-        ComponentRouterGenerator generator = new ComponentRouterGenerator(mFiler);
+        MethodRouterGenerator generator = new MethodRouterGenerator(mFiler, log);
+        ObjectRouterGenerator objectRouterGenerator = new ObjectRouterGenerator(mFiler, log);
         Set<? extends Element> javaClassElements = roundEnvironment.getElementsAnnotatedWith(ObjectRoute.class);
         for (Element javaClassElement : javaClassElements) {
             if (javaClassElement instanceof TypeElement) {
                 generator.setElement((TypeElement) javaClassElement);
                 generator.generate();
+                objectRouterGenerator.setElement((TypeElement) javaClassElement);
+                objectRouterGenerator.generate();
             }
         }
         FinderGenerator finderGenerator = new FinderGenerator(mFiler, javaClassElements);

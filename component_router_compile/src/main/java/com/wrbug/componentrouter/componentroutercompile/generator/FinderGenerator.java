@@ -1,12 +1,10 @@
-package com.wrbug.componentrouter.componentroutercompile;
+package com.wrbug.componentrouter.componentroutercompile.generator;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.wrbug.componentrouter.ComponentRouterProxy;
-//import com.wrbug.componentrouter.ComponentRouterFinder;
 
 import java.util.Set;
 
@@ -28,30 +26,29 @@ public class FinderGenerator implements Generator {
 
     @Override
     public void generate() {
-        TypeSpec.Builder builder = TypeSpec.classBuilder("ComponentRouterFinder")
-                .addModifiers(Modifier.PUBLIC)
-                .addJavadoc("Generated code from Treasure. Do not modify!");
+        TypeSpec.Builder builder = TypeSpec.classBuilder(FINDER_CLASS_NAME)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
         MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder("get")
                 .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-                .addAnnotation(ClassName.get("android.support.annotation","Nullable"))
+                .addAnnotation(ClassName.get("android.support.annotation", "Nullable"))
                 .returns(ComponentRouterProxy.class)
                 .addParameter(Object.class, "obj");
 
         for (Element element : mElements) {
             if (element instanceof TypeElement) {
                 TypeElement typeElement = (TypeElement) element;
-                final String name = typeElement.getQualifiedName().toString() + SUFFIX;
+                final String name = typeElement.getQualifiedName().toString() + PROXY_SUFFIX;
                 final String packageName = name.substring(0, name.lastIndexOf("."));
                 final String className = name.substring(packageName.length() + 1);
                 final ClassName classType = ClassName.get(packageName, className);
                 getMethodBuilder.beginControlFlow("if ($T.is(obj))", classType)
-                        .addCode("return new $T(($L)obj);", classType,typeElement.getQualifiedName().toString())
+                        .addCode("return new $T(($L)obj);", classType, typeElement.getQualifiedName().toString())
                         .endControlFlow();
             }
         }
         getMethodBuilder.addStatement("return null");
         builder.addMethod(getMethodBuilder.build());
-        JavaFile javaFile = JavaFile.builder("com.wrbug.componentrouter", builder.build()).build();
+        JavaFile javaFile = JavaFile.builder(PACKAGE_NAME, builder.build()).build();
         try {
             javaFile.writeTo(mFiler);
         } catch (Exception e) {

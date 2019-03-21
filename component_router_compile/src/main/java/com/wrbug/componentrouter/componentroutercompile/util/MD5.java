@@ -1,4 +1,4 @@
-package com.wrbug.componentrouter.componentroutercompile;
+package com.wrbug.componentrouter.componentroutercompile.util;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

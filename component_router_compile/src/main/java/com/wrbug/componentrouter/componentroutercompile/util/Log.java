@@ -1,4 +1,4 @@
-package com.wrbug.componentrouter.componentroutercompile;
+package com.wrbug.componentrouter.componentroutercompile.util;
 
 import javax.annotation.processing.Messager;
 import javax.tools.Diagnostic;

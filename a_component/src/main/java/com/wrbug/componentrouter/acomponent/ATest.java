@@ -1,10 +1,26 @@
 package com.wrbug.componentrouter.acomponent;
 
-import com.wrbug.componentrouter.MethodRouter;
-import com.wrbug.componentrouter.ObjectRoute;
+import com.wrbug.componentrouter.annotation.ConstructorRouter;
+import com.wrbug.componentrouter.annotation.MethodRouter;
+import com.wrbug.componentrouter.annotation.ObjectRoute;
 
-@ObjectRoute()
+@ObjectRoute("/a/ATest")
 public class ATest {
+    @ConstructorRouter
+    public ATest() {
+    }
+
+    @ConstructorRouter
+    public ATest(String tag,int aaa) {
+    }
+    @ConstructorRouter
+    public ATest(String tag,String aaa) {
+    }
+
+    @ConstructorRouter
+    public ATest(Object[] tag) {
+    }
+
     @MethodRouter("test")
     String test() {
         return "ATest";

@@ -1,4 +1,4 @@
-package com.wrbug.componentrouter;
+package com.wrbug.componentrouter.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
