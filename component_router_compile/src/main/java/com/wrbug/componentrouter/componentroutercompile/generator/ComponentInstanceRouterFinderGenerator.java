@@ -20,6 +20,9 @@ import javax.lang.model.element.TypeElement;
 
 import static com.wrbug.componentrouter.componentroutercompile.Constant.*;
 
+/**
+ * {@link com.wrbug.componentrouter.ComponentRouterInstanceFinder} 类生成器
+ */
 public class ComponentInstanceRouterFinderGenerator implements Generator {
     private Filer mFiler;
     private Set<? extends Element> mElements;

@@ -25,6 +25,9 @@ import javax.lang.model.type.TypeMirror;
 
 import static com.wrbug.componentrouter.componentroutercompile.Constant.*;
 
+/**
+ * 远程method注册生成器
+ */
 public class MethodRouterGenerator extends ElementGenerator {
 
 
@@ -72,6 +75,11 @@ public class MethodRouterGenerator extends ElementGenerator {
         return builder.build();
     }
 
+    /**
+     * 添加构造方法
+     * @param builder
+     * @param routeType
+     */
     private void addConstructorMethod(TypeSpec.Builder builder, ClassName routeType) {
         MethodSpec.Builder methodBuilder = MethodSpec.constructorBuilder()
                 .addParameter(routeType, "obj")
@@ -80,6 +88,12 @@ public class MethodRouterGenerator extends ElementGenerator {
         builder.addMethod(methodBuilder.build());
     }
 
+    /**
+     *
+     * is() 方法
+     * @param builder
+     * @param routeType
+     */
     private void addIsForMethod(TypeSpec.Builder builder, ClassName routeType) {
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(METHOD_IS)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
@@ -89,6 +103,12 @@ public class MethodRouterGenerator extends ElementGenerator {
         builder.addMethod(methodBuilder.build());
     }
 
+    /**
+     * call() 方法
+     * @param builder
+     * @param className
+     * @param map
+     */
     private void addCallMethod(TypeSpec.Builder builder, String className, Map<String, MethodInfo> map) {
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(METHOD_CALL).addModifiers(Modifier.PUBLIC);
         methodBuilder.addParameter(String.class, ARG_NAMES[0], Modifier.FINAL).varargs();

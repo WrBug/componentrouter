@@ -1,14 +1,11 @@
 package com.wrbug.componentrouter.componentroutercompile.generator;
 
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.wrbug.componentrouter.ComponentRouterInstance;
 import com.wrbug.componentrouter.ComponentRouterProxy;
 import com.wrbug.componentrouter.EmptyPathException;
-import com.wrbug.componentrouter.ParameterInfo;
 import com.wrbug.componentrouter.annotation.ConstructorRouter;
 import com.wrbug.componentrouter.annotation.ObjectRoute;
 import com.wrbug.componentrouter.componentroutercompile.util.Log;

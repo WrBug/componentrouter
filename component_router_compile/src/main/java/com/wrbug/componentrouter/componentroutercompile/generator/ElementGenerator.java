@@ -2,7 +2,6 @@ package com.wrbug.componentrouter.componentroutercompile.generator;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
-import com.wrbug.componentrouter.EmptyPathException;
 import com.wrbug.componentrouter.componentroutercompile.util.Log;
 
 import javax.annotation.processing.Filer;

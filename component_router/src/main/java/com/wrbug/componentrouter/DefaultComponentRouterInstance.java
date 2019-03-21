@@ -3,7 +3,7 @@ package com.wrbug.componentrouter;
 public class DefaultComponentRouterInstance implements ComponentRouterInstance {
     public volatile static DefaultComponentRouterInstance instance;
 
-    public static synchronized DefaultComponentRouterInstance getDefault() {
+    public static DefaultComponentRouterInstance getDefault() {
         if (instance != null) {
             return instance;
         }

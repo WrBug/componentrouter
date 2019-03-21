@@ -57,8 +57,9 @@ public class ComponentRouterProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-        log.printMessage("process..........");
+        //方法注册生成
         MethodRouterGenerator methiodGenerator = new MethodRouterGenerator(mFiler, log);
+        //实例注册生成
         ObjectRouterGenerator objectRouterGenerator = new ObjectRouterGenerator(mFiler, log);
         Set<? extends Element> javaClassElements = roundEnvironment.getElementsAnnotatedWith(ObjectRoute.class);
         for (Element javaClassElement : javaClassElements) {
