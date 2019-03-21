@@ -7,8 +7,9 @@ class ComponentRouterPlugin extends BasePlugin {
 
     @Override
     void onAppApply(Project project) {
-        MergeFinderTransform transform = new MergeFinderTransform(project)
+        MergeMethodRouterFinderTransform transform = new MergeMethodRouterFinderTransform(project)
         ((BaseExtension) project.android).registerTransform(transform)
+        ((BaseExtension) project.android).registerTransform(new MergeInstanceRouterFinderTransform(project))
     }
 
 }

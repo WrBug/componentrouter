@@ -1,39 +1,37 @@
 package com.wrbug.componentrouter.sample;
 
-import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wrbug.componentrouter.ComponentRouter;
+import com.wrbug.componentrouter.ComponentRouterInstance;
 import com.wrbug.componentrouter.ComponentRouterProxy;
-import com.wrbug.componentrouter.MethodRouter;
-import com.wrbug.componentrouter.ObjectRoute;
+import com.wrbug.componentrouter.annotation.MethodRouter;
+import com.wrbug.componentrouter.annotation.ObjectRoute;
 
 import java.util.List;
 
-@ObjectRoute("sadfasd")
 public class MainActivity extends AppCompatActivity {
+    ComponentRouterInstance build;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
-
-    @MethodRouter(value = "show", javaDocDesc = "显示toast")
-    public void show(String aaa, int a, Object aa, Bundle bundle, Object[] ee, List<MainActivity> list,String... str) {
-
+        build = ComponentRouter.build("/a/AFragment");
+        Fragment fragment = build.getInstance();
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commitAllowingStateLoss();
+        }
     }
 
     public void onClick(View view) {
-        Test test = new Test();
-        ComponentRouterProxy proxy = ComponentRouter.createProxy(test);
-        proxy.call("test", "hahaha",123,"a","b");
+        String text = build.getProxy().call("getText");
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 
-    @MethodRouter("show1")
-    public List<String> show1(String aa, Runnable runnable) {
-        return null;
-    }
 }

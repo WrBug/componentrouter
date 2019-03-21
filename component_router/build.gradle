@@ -17,6 +17,7 @@ dependencies {
 }
 jar {
     exclude 'com/wrbug/componentrouter/ComponentRouterFinder*'
+    exclude 'com/wrbug/componentrouter/ComponentRouterInstanceFinder*'
 }
 sourceCompatibility = "7"
 targetCompatibility = "7"

@@ -16,14 +16,14 @@ import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
 import java.util.zip.ZipEntry
 
-class MergeFinderTransform extends BaseTransform {
+ class MergeMethodRouterFinderTransform extends BaseTransform {
 
     private static final String FINDER_NAME = "com/wrbug/componentrouter/ComponentRouterFinder.class"
     private static final String FINDER_CLASS_NAME = "com.wrbug.componentrouter.ComponentRouterFinder"
 
     private Project mProject
 
-    MergeFinderTransform(Project project) {
+    MergeMethodRouterFinderTransform(Project project) {
         mProject = project
     }
 

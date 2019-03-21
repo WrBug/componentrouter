@@ -11,5 +11,6 @@ public class Constant {
     public static final String METHOD_CALL = "call";
     public static final String METHOD_IS = "is";
     public static final String FINDER_CLASS_NAME = "ComponentRouterFinder";
+    public static final String INSTANCE_FINDER_CLASS_NAME = "ComponentRouterInstanceFinder";
     public static final String PACKAGE_NAME = "com.wrbug.componentrouter";
 }

@@ -4,15 +4,15 @@ package com.wrbug.componentrouter;
 public class ComponentRouter {
     public static ComponentRouterProxy createProxy(Object obj) {
         if (obj == null) {
-            return DefaultComponentRouterProxy.getInstance();
+            return DefaultComponentRouterProxy.getDefault();
         }
         return ComponentRouterFinder.get(obj);
     }
 
-    public static ComponentRouterInstance build(String path) {
+    public static ComponentRouterInstance build(String path,Object... parameters) {
         if (path == null || path.isEmpty()) {
-            return DefaultComponentRouterInstance.getGefault();
+            return DefaultComponentRouterInstance.getDefault();
         }
-        return ComponentRouterInstanceFinder.get(path);
+        return ComponentRouterInstanceFinder.get(path,parameters);
     }
 }

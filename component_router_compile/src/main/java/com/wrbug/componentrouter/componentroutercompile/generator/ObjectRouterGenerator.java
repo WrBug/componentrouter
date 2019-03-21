@@ -56,10 +56,13 @@ public class ObjectRouterGenerator extends ElementGenerator {
     }
 
     private void buildConstructor(TypeSpec.Builder builder, TypeElement element, ClassName targetClassName) {
+        ClassName className = ClassName.get(PACKAGE_NAME, FINDER_CLASS_NAME);
         MethodSpec.Builder methodBuilder = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addStatement("")
                 .addStatement("initInstance(params)")
+                .beginControlFlow("if($L!=null)", INSTANCE_FIELD_NAME)
+                .addStatement("$L=$T.get($L)", INSTANCE_COMPONENT_ROUTER_PROXY_FIELD_NAME, className, INSTANCE_FIELD_NAME)
+                .endControlFlow()
                 .addParameter(Object[].class, "params", Modifier.FINAL).varargs();
         builder.addMethod(methodBuilder.build());
         buildInitMethod(builder, element, targetClassName);
@@ -113,20 +116,24 @@ public class ObjectRouterGenerator extends ElementGenerator {
                 argBuilder.append("(").append(argType).append(")").append(paramsName).append("[").append(i).append("]");
             }
         }
-        for (Map.Entry<Integer, List<StringBuilder[]>> entry : map.entrySet()) {
-            Integer key = entry.getKey();
-            List<StringBuilder[]> value = entry.getValue();
-            methodBuilder.beginControlFlow("if($L.length==$L)", paramsName, key);
-            for (StringBuilder[] builders : value) {
-                StringBuilder code = builders[0];
-                StringBuilder argBuilder = builders[1];
-                methodBuilder.beginControlFlow("if($L)", code.toString());
-                methodBuilder.addStatement("$L=new $T($L)", INSTANCE_FIELD_NAME, targetClassName, argBuilder.toString());
-                methodBuilder.addStatement("return");
+        if (!map.isEmpty()) {
+            for (Map.Entry<Integer, List<StringBuilder[]>> entry : map.entrySet()) {
+                Integer key = entry.getKey();
+                List<StringBuilder[]> value = entry.getValue();
+                methodBuilder.beginControlFlow("if($L.length==$L)", paramsName, key);
+                for (StringBuilder[] builders : value) {
+                    StringBuilder code = builders[0];
+                    StringBuilder argBuilder = builders[1];
+                    methodBuilder.beginControlFlow("if($L)", code.toString());
+                    methodBuilder.addStatement("$L=new $T($L)", INSTANCE_FIELD_NAME, targetClassName, argBuilder.toString());
+                    methodBuilder.addStatement("return");
+                    methodBuilder.endControlFlow();
+                }
                 methodBuilder.endControlFlow();
-            }
-            methodBuilder.endControlFlow();
 
+            }
+        } else {
+            methodBuilder.addStatement("$L=new $T()", INSTANCE_FIELD_NAME, targetClassName);
         }
         builder.addMethod(methodBuilder.build());
     }

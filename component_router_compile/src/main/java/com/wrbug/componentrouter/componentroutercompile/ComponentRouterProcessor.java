@@ -2,7 +2,9 @@ package com.wrbug.componentrouter.componentroutercompile;
 
 import com.google.auto.service.AutoService;
 import com.wrbug.componentrouter.annotation.ObjectRoute;
-import com.wrbug.componentrouter.componentroutercompile.generator.FinderGenerator;
+import com.wrbug.componentrouter.componentroutercompile.generator.ComponentInstanceRouterFinderGenerator;
+import com.wrbug.componentrouter.componentroutercompile.generator.ComponentRouterFinderGenerator;
+import com.wrbug.componentrouter.componentroutercompile.generator.Generator;
 import com.wrbug.componentrouter.componentroutercompile.generator.MethodRouterGenerator;
 import com.wrbug.componentrouter.componentroutercompile.generator.ObjectRouterGenerator;
 import com.wrbug.componentrouter.componentroutercompile.util.Log;
@@ -56,19 +58,21 @@ public class ComponentRouterProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         log.printMessage("process..........");
-        MethodRouterGenerator generator = new MethodRouterGenerator(mFiler, log);
+        MethodRouterGenerator methiodGenerator = new MethodRouterGenerator(mFiler, log);
         ObjectRouterGenerator objectRouterGenerator = new ObjectRouterGenerator(mFiler, log);
         Set<? extends Element> javaClassElements = roundEnvironment.getElementsAnnotatedWith(ObjectRoute.class);
         for (Element javaClassElement : javaClassElements) {
             if (javaClassElement instanceof TypeElement) {
-                generator.setElement((TypeElement) javaClassElement);
-                generator.generate();
+                methiodGenerator.setElement((TypeElement) javaClassElement);
+                methiodGenerator.generate();
                 objectRouterGenerator.setElement((TypeElement) javaClassElement);
                 objectRouterGenerator.generate();
             }
         }
-        FinderGenerator finderGenerator = new FinderGenerator(mFiler, javaClassElements);
-        finderGenerator.generate();
+        Generator generator = new ComponentRouterFinderGenerator(mFiler, javaClassElements);
+        generator.generate();
+        generator = new ComponentInstanceRouterFinderGenerator(mFiler, javaClassElements);
+        generator.generate();
         return true;
     }
 }

@@ -3,7 +3,7 @@ package com.wrbug.componentrouter;
 public class DefaultComponentRouterProxy implements ComponentRouterProxy {
     public volatile static DefaultComponentRouterProxy instance;
 
-    public static DefaultComponentRouterProxy getInstance() {
+    public static DefaultComponentRouterProxy getDefault() {
         if (instance != null) {
             return instance;
         }

@@ -126,7 +126,11 @@ public class MethodRouterGenerator extends ElementGenerator {
             }
             javaDoc.append("returnType: ").append(methodInfo.getReturnType()).append("\n\n----------------------\n\n");
 //            builder.append(PROXY_FIELD_NAME).append(".").append(methodInfo.getMethodName()).append("(").append(argBuilder).append(");\n}");
-            methodBuilder.addStatement(PROXY_FIELD_NAME + "." + methodInfo.getMethodName() + "(" + argBuilder.toString() + ")");
+            if ("void" .equals(methodInfo.getReturnType())) {
+                methodBuilder.addStatement("$L.$L($L)", PROXY_FIELD_NAME, methodInfo.getMethodName(), argBuilder.toString());
+            } else {
+                methodBuilder.addStatement("return $L.$L($L)", PROXY_FIELD_NAME, methodInfo.getMethodName(), argBuilder.toString());
+            }
             methodBuilder.endControlFlow();
         }
         methodBuilder.addCode("\nreturn null;\n");
