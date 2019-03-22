@@ -6,13 +6,13 @@ public class ComponentRouter {
         if (obj == null) {
             return DefaultComponentRouterProxy.getDefault();
         }
-        return ComponentRouterFinder.get(obj);
+        return (ComponentRouterProxy) ComponentRouterFinder.get(obj);
     }
 
-    public static ComponentRouterInstance build(String path,Object... parameters) {
+    public static ComponentRouterInstance build(String path, Object... parameters) {
         if (path == null || path.isEmpty()) {
             return DefaultComponentRouterInstance.getDefault();
         }
-        return ComponentRouterInstanceFinder.get(path,parameters);
+        return (ComponentRouterInstance) ComponentRouterInstanceFinder.get(path, parameters);
     }
 }

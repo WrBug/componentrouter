@@ -18,7 +18,6 @@ import javax.lang.model.element.TypeElement;
 import static com.wrbug.componentrouter.componentroutercompile.Constant.*;
 
 /**
- * {@link com.wrbug.componentrouter.ComponentRouterFinder} 类生成器
  */
 public class ComponentRouterFinderGenerator implements Generator {
     private Filer mFiler;
@@ -36,7 +35,7 @@ public class ComponentRouterFinderGenerator implements Generator {
         MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder("get")
                 .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
                 .addAnnotation(ClassName.get("android.support.annotation", "Nullable"))
-                .returns(ComponentRouterProxy.class)
+                .returns(Object.class)
                 .addParameter(Object.class, "obj");
 
         for (Element element : mElements) {

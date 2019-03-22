@@ -6,6 +6,7 @@ dependencies {
     implementation 'com.squareup:javapoet:1.10.0'
     implementation 'com.google.auto.service:auto-service:1.0-rc3'
 }
-
 sourceCompatibility = "7"
 targetCompatibility = "7"
+
+apply from: rootProject.file('gradle/gradle-jcenter-push.gradle')

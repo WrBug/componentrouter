@@ -21,7 +21,6 @@ import javax.lang.model.element.TypeElement;
 import static com.wrbug.componentrouter.componentroutercompile.Constant.*;
 
 /**
- * {@link com.wrbug.componentrouter.ComponentRouterInstanceFinder} 类生成器
  */
 public class ComponentInstanceRouterFinderGenerator implements Generator {
     private Filer mFiler;
@@ -38,7 +37,7 @@ public class ComponentInstanceRouterFinderGenerator implements Generator {
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
         MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder("get")
                 .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-                .returns(ComponentRouterInstance.class)
+                .returns(Object.class)
                 .addParameter(String.class, "path")
                 .addParameter(Object[].class, "parameters").varargs();
 

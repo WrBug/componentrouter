@@ -58,7 +58,7 @@ public class ObjectRouterGenerator extends ElementGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .addStatement("initInstance(params)")
                 .beginControlFlow("if($L!=null)", INSTANCE_FIELD_NAME)
-                .addStatement("$L=$T.get($L)", INSTANCE_COMPONENT_ROUTER_PROXY_FIELD_NAME, className, INSTANCE_FIELD_NAME)
+                .addStatement("$L=($T)$T.get($L)", INSTANCE_COMPONENT_ROUTER_PROXY_FIELD_NAME, ComponentRouterProxy.class, className, INSTANCE_FIELD_NAME)
                 .endControlFlow()
                 .addParameter(Object[].class, "params", Modifier.FINAL).varargs();
         builder.addMethod(methodBuilder.build());

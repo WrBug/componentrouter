@@ -9,9 +9,9 @@ public class ComponentRouterInstanceFinder {
     /**
      * @param path  {@link ObjectRoute#value()}
      * @param parameters    constructorParams
-     * @return
+     * @return  {@link ComponentRouterInstance}  由于文件合并不识别ComponentRouterInstance ，只能用object
      */
-    public static ComponentRouterInstance get(String path, Object... parameters) {
+    public static Object get(String path, Object... parameters) {
         return null;
     }
 }

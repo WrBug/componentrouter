@@ -9,9 +9,9 @@ public class ComponentRouterFinder {
      * 获取instance代理，obj 需要 {@link com.wrbug.componentrouter.annotation.ObjectRoute} 注解
      *
      * @param obj
-     * @return
+     * @return  {@link ComponentRouterProxy} 由于文件合并不识别ComponentRouterInstance ，只能用object
      */
-    public static ComponentRouterProxy get(Object obj) {
+    public static Object get(Object obj) {
         return null;
     }
 }

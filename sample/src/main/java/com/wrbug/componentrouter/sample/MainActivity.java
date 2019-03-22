@@ -14,7 +14,7 @@ import com.wrbug.componentrouter.annotation.MethodRouter;
 import com.wrbug.componentrouter.annotation.ObjectRoute;
 
 import java.util.List;
-
+@ObjectRoute("ss")
 public class MainActivity extends AppCompatActivity {
     ComponentRouterInstance build;
 

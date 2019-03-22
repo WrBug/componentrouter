@@ -9,18 +9,22 @@ dependencies {
 //    compile "com.android.tools.build:gradle-core:$GRADLE_VERSION"
     implementation "com.android.tools.build:builder:$GRADLE_VERSION"
     implementation 'org.javassist:javassist:3.24.1-GA'
+
 }
 
 apply plugin: 'maven'
-group = 'com.wrbug.componentrouter'
-version = '1.0.0'
-project.archivesBaseName = 'gradle'
+//group = 'com.wrbug.componentrouter'
+//version = router_version
+//project.archivesBaseName = 'gradle'
+//
+//uploadArchives {
+//
+//    repositories {
+//        mavenDeployer {
+//            //本地的Maven地址设置为D:/repos
+//            repository(url: uri('../repo'))
+//        }
+//    }
+//}
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            //本地的Maven地址设置为D:/repos
-            repository(url: uri('../repo'))
-        }
-    }
-}
+apply from: rootProject.file('gradle/gradle-jcenter-push.gradle')

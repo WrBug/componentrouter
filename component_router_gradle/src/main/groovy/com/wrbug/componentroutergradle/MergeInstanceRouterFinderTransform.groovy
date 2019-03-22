@@ -18,7 +18,7 @@ import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
 import java.util.zip.ZipEntry
 
- class MergeInstanceRouterFinderTransform extends BaseTransform {
+class MergeInstanceRouterFinderTransform extends BaseTransform {
 
     private static final String FINDER_NAME = "com/wrbug/componentrouter/ComponentRouterInstanceFinder.class"
     private static final String FINDER_CLASS_NAME = "com.wrbug.componentrouter.ComponentRouterInstanceFinder"
@@ -63,7 +63,6 @@ import java.util.zip.ZipEntry
         def dependencyClassPaths = new ArrayList<String>()
 
         transformInvocation.inputs.each { input ->
-            // 先从依赖中找出 PreferencesFinder
             input.jarInputs.each { jarInput ->
                 String destName = jarInput.name
                 def md5Name = DigestUtils.md5Hex(jarInput.file.absolutePath);
@@ -71,7 +70,6 @@ import java.util.zip.ZipEntry
                     destName = destName.substring(0, destName.length() - 4);
                 }
                 File dest = outputProvider.getContentLocation("${destName}_${md5Name}", jarInput.contentTypes, jarInput.scopes, Format.JAR);
-                // 检测有没有 PreferencesFinder
                 def jarFile = new JarFile(jarInput.file)
                 def entry = findEntry(jarFile, FINDER_NAME)
                 if (entry) {
@@ -81,7 +79,6 @@ import java.util.zip.ZipEntry
                     finderClassPaths.add(jarInput.file.parentFile)
                     deleteEntry(jarInput.file, jarFile, entry)
                 } else {
-                    // 没有找到 PreferencesFinder，是一个没有使用 Treasure 的依赖，判断是否是 treasure 包。
                     dependencyClassPaths.add(jarInput.file.absolutePath)
                 }
 
@@ -91,7 +88,6 @@ import java.util.zip.ZipEntry
             input.directoryInputs.each { directoryInput ->
                 def dir = directoryInput.file
                 if (finderClassPaths.size() > 0) {
-                    // 查找当前 module 中 PreferencesFinder
                     File finderFile = findClassFile(dir, FINDER_NAME)
                     if (finderFile) {
                         finderClassPaths.add(dir)
@@ -124,7 +120,6 @@ import java.util.zip.ZipEntry
                                 def getMethod = CtNewMethod.copy(tmp, tmp.name, clazz, null)
                                 // 删除原来的 get 方法
                                 clazz.removeMethod(clazz.getDeclaredMethod("get"))
-                                // 合并所有 PreferencesFinder
                                 def body = new StringBuilder()
                                 body.append("{Object result = null;\n")
                                 methods.eachWithIndex { method, index ->
@@ -137,7 +132,6 @@ import java.util.zip.ZipEntry
                                 }
                                 body.append("return null;\n")
                                 body.append("}\n")
-
                                 getMethod.setBody(body.toString())
                                 // 添加新的 get 方法
                                 clazz.addMethod(getMethod)
