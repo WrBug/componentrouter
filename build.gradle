@@ -2,17 +2,22 @@
 
 buildscript {
     ext.router_version = '1.0.0'
+
+    //使用本地依赖
+    ext.local = false
     repositories {
-//        maven {
-//            url uri('repo')
-//        }
+        if(local){
+            maven {
+                url uri('repo')
+            }
+        }
         maven { url 'https://maven.aliyun.com/repository/public' }
         google()
         jcenter()
-        maven{
+        maven {
             url "https://dl.bintray.com/wrbug/maven/"
         }
-        
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.1'
@@ -30,7 +35,7 @@ allprojects {
         maven { url 'https://maven.aliyun.com/repository/public' }
         google()
         jcenter()
-        maven{
+        maven {
             url "https://dl.bintray.com/wrbug/maven/"
         }
     }

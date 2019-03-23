@@ -28,8 +28,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'com.android.support:appcompat-v7:28.0.0'
-//    implementation project(':component_router')
-//    annotationProcessor project(':component_router_compile')
-    api "com.wrbug.componentrouter:componentrouter:$router_version"
-    annotationProcessor "com.wrbug.componentrouter:compile:$router_version"
+    if (local) {
+        implementation project(':component_router')
+        annotationProcessor project(':component_router_compile')
+    } else {
+        api "com.wrbug.componentrouter:componentrouter:$router_version"
+        annotationProcessor "com.wrbug.componentrouter:compile:$router_version"
+    }
 }

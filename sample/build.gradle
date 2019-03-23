@@ -23,9 +23,12 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-//    implementation project(':component_router')
-//    annotationProcessor project(':component_router_compile')
-    api "com.wrbug.componentrouter:componentrouter:$router_version"
-    annotationProcessor "com.wrbug.componentrouter:compile:$router_version"
+    if(local){
+        implementation project(':component_router')
+        annotationProcessor project(':component_router_compile')
+    }else {
+        api "com.wrbug.componentrouter:componentrouter:$router_version"
+        annotationProcessor "com.wrbug.componentrouter:compile:$router_version"
+    }
     runtimeOnly project(':a_component')
 }
