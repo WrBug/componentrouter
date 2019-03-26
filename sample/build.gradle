@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.wrbug.componentroutergradle'
+//apply plugin: 'com.wrbug.componentroutergradle'
 
 android {
     compileSdkVersion 28

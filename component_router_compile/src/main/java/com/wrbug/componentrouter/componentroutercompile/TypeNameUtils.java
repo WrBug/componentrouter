@@ -38,4 +38,14 @@ public class TypeNameUtils {
         String className = fullClassName.replace(packageName, "").replace(".", "");
         return ClassName.get(packageName, className);
     }
+    public static String getDefaultValue(String fullClassName) {
+        TypeName typeName = getTypeName(fullClassName);
+        if (typeName == TypeName.SHORT || typeName == TypeName.INT || typeName == TypeName.LONG || typeName == TypeName.FLOAT || typeName == TypeName.DOUBLE || typeName == TypeName.CHAR || typeName == TypeName.BYTE) {
+            return String.format("(%s)0", typeName.toString());
+        }
+        if (typeName == TypeName.BOOLEAN) {
+            return "false";
+        }
+        return String.format("(%s)null", typeName.toString());
+    }
 }

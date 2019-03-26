@@ -13,18 +13,23 @@ dependencies {
 }
 
 apply plugin: 'maven'
-//group = 'com.wrbug.componentrouter'
-//version = router_version
-//project.archivesBaseName = 'gradle'
-//
-//uploadArchives {
-//
-//    repositories {
-//        mavenDeployer {
-//            //本地的Maven地址设置为D:/repos
-//            repository(url: uri('../repo'))
-//        }
-//    }
-//}
 
-apply from: rootProject.file('gradle/gradle-jcenter-push.gradle')
+if(local){
+    group = 'com.wrbug.componentrouter'
+    version = router_version
+    project.archivesBaseName = 'gradle'
+
+    uploadArchives {
+
+        repositories {
+            mavenDeployer {
+                //本地的Maven地址设置为D:/repos
+                repository(url: uri('../repo'))
+            }
+        }
+    }
+}else {
+    apply from: rootProject.file('gradle/gradle-jcenter-push.gradle')
+}
+
+
