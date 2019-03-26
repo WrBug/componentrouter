@@ -1,7 +1,7 @@
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
-version = router_version
+version = "1.0.1"
 project.archivesBaseName = PROJ_ARTIFACTID
 
 def siteUrl = 'https://github.com/WrBug/componentrouter'
@@ -29,8 +29,9 @@ javadoc {
         encoding "UTF-8"
         charSet 'UTF-8'
         author true
+        failOnError false
         version true
-        title "componentrouter $router_version"
+        title "componentrouter $version"
         String packageListRef = ""
         linksOffline 'http://d.android.com/reference/', packageListRef
     }

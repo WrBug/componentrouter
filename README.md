@@ -1,13 +1,13 @@
 # ComponentRouter 
 
-一款组件间通信的方案，0反射，仅需简单配置，即可方便的进行组件间通信
+> 一款高效的组件间通信方案，0反射，仅需简单配置，即可方便的进行组件间通信
 
 
 ### 使用
 
 #### 添加依赖
 
-最新版本：1.0.0
+最新版本：`1.0.1`
 
  工程根目录`build.gradle`下添加：
 
@@ -20,16 +20,16 @@ dependencies {
 各模块`build.gradle`添加
 
 ```
-//仅在主工程添加即可
+//仅在主工程添加即可 (只有一个模块使用@ObjectRoute 时不要添加！！！)
 apply plugin: 'com.wrbug.componentroutergradle'
 //============
 implementation "com.wrbug.componentrouter:componentrouter:$version"
 annotationProcessor "com.wrbug.componentrouter:compile:$version"
 ```
 
-#### 使用(以sample为例)
+#### 使用1. (获取Fragment实例)
 
-##### 注册Service(AFragment提供给外部使用)
+##### 注册Service([AFragment](a_component/src/main/java/com/wrbug/componentrouter/acomponent/AFragment.java)提供给外部使用)
 
 ```
 //注册服务
@@ -40,12 +40,6 @@ public class AFragment extends Fragment {
     //提供给外部实例化的构造方法
     @ConstructorRouter
     public AFragment() {
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_a, container, false);
     }
 
     @Override
@@ -75,6 +69,74 @@ if (fragment != null) {
 //调用服务
 String text = build.getProxy().call("getText");
 ```
+
+#### 使用2. (跨组件调用单例)
+
+##### 注册Service([UserManagerService](a_component/src/main/java/com/wrbug/componentrouter/acomponent/UserManagerService.java)提供sp服务给外部)
+
+```
+@ObjectRoute("/a/userManager")
+public class UserManagerService {
+    private static volatile UserManagerService instance;
+    private Context mContext;
+    private SharedPreferences mUserSharedPreferences;
+
+    private UserManagerService(Context context) {
+        mContext = context.getApplicationContext();
+        mUserSharedPreferences = mContext.getSharedPreferences("user", Context.MODE_PRIVATE);
+    }
+
+    @SingletonRouter
+    public static UserManagerService getInstance(Context context) {
+        if (instance == null) {
+            synchronized (UserManagerService.class) {
+                if (instance == null) {
+                    instance = new UserManagerService(context);
+                }
+            }
+        }
+        return instance;
+    }
+
+    @MethodRouter("saveUsername")
+    public void saveUsername(String username) {
+        mUserSharedPreferences.edit().putString("username", username).apply();
+    }
+
+    @MethodRouter("getUsername")
+    public String getUsername() {
+        return mUserSharedPreferences.getString("username", "");
+    }
+
+}
+```
+##### 获取service代理
+
+```
+// UserManagerService 存在 @SingletonRouter注解，build 也为单例
+ComponentRouterInstance build = ComponentRouter.build("/a/userManager", this.getApplicationContext());
+//保存username
+build.getProxy().call("saveUsername", "WrBug");
+//获取username
+String username = build.getProxy().call("getUsername");
+```
+
+### 注解使用
+
+##### [@ObjectRoute](component_router/src/main/java/com/wrbug/componentrouter/annotation/ObjectRoute.java)
+
+类注解，参数path，服务类只有使用该注解，其他注解才会生效
+
+##### [@ConstructorRouter](component_router/src/main/java/com/wrbug/componentrouter/annotation/ConstructorRouter.java)
+
+构造方法注解，用于`ComponentRouter.build()`生成 代理实例，**服务类中如有构造方法，将需要提供给外部的构造方法加上该注解**
+##### [@SingletonRouter](component_router/src/main/java/com/wrbug/componentrouter/annotation/SingletonRouter.java)
+
+单例注解，用于获取服务类单例的静态方法，用法同`ConstructorRouter`，服务类中如使用`@SingletonRouter`，`@ConstructorRouter`将自动失效，使用参考[UserManagerService](a_component/src/main/java/com/wrbug/componentrouter/acomponent/UserManagerService.java)
+
+##### [@MethodRouter](component_router/src/main/java/com/wrbug/componentrouter/annotation/MethodRouter.java)
+
+方法注解，用于服务类提供给外部的方法，使用参考[UserManagerService](a_component/src/main/java/com/wrbug/componentrouter/acomponent/UserManagerService.java)
 
 
 ### ComponentRouter原理

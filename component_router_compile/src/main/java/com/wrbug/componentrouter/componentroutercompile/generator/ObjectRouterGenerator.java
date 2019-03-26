@@ -1,7 +1,9 @@
 package com.wrbug.componentrouter.componentroutercompile.generator;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.wrbug.componentrouter.ComponentRouterInstance;
 import com.wrbug.componentrouter.ComponentRouterProxy;
@@ -79,7 +81,6 @@ public class ObjectRouterGenerator extends ElementGenerator {
             SingletonRouter singletonRouter = enclosedElement.getAnnotation(SingletonRouter.class);
             if (singletonRouter != null) {
                 isSingleton = true;
-                log("singletonBuilder");
                 singletonBuilder(methodBuilder, enclosedElement, paramsName, targetClassName);
                 break;
             }
@@ -109,7 +110,7 @@ public class ObjectRouterGenerator extends ElementGenerator {
             }
         }
 
-
+        builder.addField(FieldSpec.builder(TypeName.BOOLEAN, "isSingleton", Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL).initializer("$L", isSingleton).addJavadoc("是否为单例，{@link com.wrbug.componentrouter.annotation.SingletonRouter}").build());
         builder.addMethod(methodBuilder.build());
     }
 
