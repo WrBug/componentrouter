@@ -1,6 +1,6 @@
 # ComponentRouter 
 
-> 一款高效的组件间通信方案，0反射，仅需简单配置，即可方便的进行组件间通信
+ 一款高效的组件间通信方案，0反射，仅需简单配置，即可实现在组件完全解耦的情况下的通信
 
 
 ### 使用
@@ -11,7 +11,7 @@
 
  工程根目录`build.gradle`下添加：
 
-``` 
+``` gradle
 dependencies {
     classpath "com.wrbug.componentrouter:gradle:$version"
 }
@@ -19,7 +19,7 @@ dependencies {
 
 各模块`build.gradle`添加
 
-```
+``` gradle
 //仅在主工程添加即可 (只有一个模块使用@ObjectRoute 时不要添加！！！)
 apply plugin: 'com.wrbug.componentroutergradle'
 //============
@@ -31,7 +31,7 @@ annotationProcessor "com.wrbug.componentrouter:compile:$version"
 
 ##### 注册Service([AFragment](a_component/src/main/java/com/wrbug/componentrouter/acomponent/AFragment.java)提供给外部使用)
 
-```
+``` java
 //注册服务
 @ObjectRoute("/a/AFragment")
 public class AFragment extends Fragment {
@@ -58,7 +58,7 @@ public class AFragment extends Fragment {
 
 ##### 获取service代理（跨组件使用Fragment）
 
-```
+``` java
 ComponentRouterInstance build=ComponentRouter.build("/a/AFragment");
 //获取实例
 Fragment fragment = build.getInstance();
@@ -74,7 +74,7 @@ String text = build.getProxy().call("getText");
 
 ##### 注册Service([UserManagerService](a_component/src/main/java/com/wrbug/componentrouter/acomponent/UserManagerService.java)提供sp服务给外部)
 
-```
+``` java
 @ObjectRoute("/a/userManager")
 public class UserManagerService {
     private static volatile UserManagerService instance;
@@ -108,11 +108,11 @@ public class UserManagerService {
         return mUserSharedPreferences.getString("username", "");
     }
 
-}
+} 
 ```
 ##### 获取service代理
 
-```
+``` java
 // UserManagerService 存在 @SingletonRouter注解，build 也为单例
 ComponentRouterInstance build = ComponentRouter.build("/a/userManager", this.getApplicationContext());
 //保存username
