@@ -4,7 +4,7 @@ buildscript {
     ext.router_version = '1.0.1'
 
     //使用本地依赖
-    ext.local = false
+    ext.local = true
     repositories {
         if(local){
             maven {
