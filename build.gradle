@@ -1,10 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.router_version = '1.0.1'
+    ext.router_version = '1.0.2'
 
     //使用本地依赖
     ext.local = true
+
     repositories {
         if(local){
             maven {

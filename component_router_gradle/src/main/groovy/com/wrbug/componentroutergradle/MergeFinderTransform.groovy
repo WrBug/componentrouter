@@ -102,6 +102,7 @@ class MergeFinderTransform extends BaseTransform {
     void mergeRoute(File dir, List routeFinderClassPaths, List routeDependencyClassPaths) {
         if (routeFinderClassPaths.size() > 0) {
             File finderFile = findClassFile(dir, ROUTE_FINDER_NAME)
+            println("mergeRoute finderFile :" + finderFile)
             if (finderFile) {
                 routeFinderClassPaths.add(dir)
                 def componentRouterInstanceFinderMethods = new ArrayList<CtMethod>()
@@ -164,6 +165,7 @@ class MergeFinderTransform extends BaseTransform {
     void mergeInstance(File dir, List instanceFinderClassPaths, List instanceDependencyClassPaths, Map<String, List<String>> deleteEntryMap) {
         if (instanceFinderClassPaths.size() > 0) {
             File finderFile = findClassFile(dir, INSTANCE_FINDER_NAME)
+            println("finderFile :" + finderFile)
             if (finderFile) {
                 deleteEntryMap.entrySet().each {
                     deleteEntry(it.key, it.value)
@@ -248,7 +250,6 @@ class MergeFinderTransform extends BaseTransform {
             finderFile.parentFile.mkdirs()
             IOUtils.copy(jarFile.getInputStream(entry), new FileOutputStream(finderFile))
             finderClassPaths.add(jarInput.file.parentFile)
-
             def key = jarInput.file.absolutePath
             List<String> list
             if (deleteEntryMap.containsKey(key)) {
@@ -258,6 +259,7 @@ class MergeFinderTransform extends BaseTransform {
                 deleteEntryMap.put(key, list)
             }
             list.add(entry.name)
+            println("find:" + key + ", name=" + name)
         } else {
             dependencyClassPaths.add(jarInput.file.absolutePath)
         }
@@ -295,6 +297,7 @@ class MergeFinderTransform extends BaseTransform {
     }
 
     static void deleteEntry(String path, List<String> entryNames) {
+        println("清理：" + entryNames)
         File file = new File(path)
         JarFile jarFile = new JarFile(file)
         def tmpJar = new File(file.parentFile, file.name + ".tmp")
@@ -304,8 +307,10 @@ class MergeFinderTransform extends BaseTransform {
         while (entries.hasMoreElements()) {
             def jarEntry = entries.nextElement()
             if (entryNames.contains(jarEntry.name)) {
+                println("过滤：" + jarEntry.name)
                 continue
             }
+            println("添加：" + jarEntry.name)
             String entryName = jarEntry.name
             ZipEntry zipEntry = new ZipEntry(entryName)
             InputStream inputStream = jarFile.getInputStream(jarEntry)

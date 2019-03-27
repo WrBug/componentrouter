@@ -1,1 +1,1 @@
-include ':sample', ':a_component', ':component_router_compile', ':component_router', ':component_router_gradle'
+include ':sample', ':a_component', ':component_router_compile', ':component_router', ':component_router_gradle', ':b_component'

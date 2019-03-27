@@ -7,7 +7,7 @@
 
 #### 添加依赖
 
-最新版本：`1.0.1`
+最新版本：`1.0.2`
 
  工程根目录`build.gradle`下添加：
 
@@ -20,12 +20,35 @@ dependencies {
 各模块`build.gradle`添加
 
 ``` gradle
-//仅在主工程添加即可 (只有一个模块使用@ObjectRoute 时不要添加！！！)
+//仅在主工程添加即可
 apply plugin: 'com.wrbug.componentroutergradle'
 //============
 implementation "com.wrbug.componentrouter:componentrouter:$version"
 annotationProcessor "com.wrbug.componentrouter:compile:$version"
 ```
+
+
+application 初始化
+
+```
+@ObjectRoute(ObjectRoute.APPLICATION_PATH)
+public class App extends Application {
+    private static App instance;
+
+    @Override
+    public void onCreate() {
+        instance = this;
+        super.onCreate();
+    }
+
+    @SingletonRouter
+    //获取application 实例，可根据项目自行配置
+    public static App getInstance() {
+        return instance;
+    }
+}
+```
+
 
 #### 使用1. (获取Fragment实例)
 
@@ -120,6 +143,20 @@ build.getProxy().call("saveUsername", "WrBug");
 //获取username
 String username = build.getProxy().call("getUsername");
 ```
+
+#### 使用3. (结合第三方框架)
+
+如果您已经通过第三方框架获取到Fragment实例，可以通过下面的方式使用服务
+
+```
+// 使用获取到Fragment
+Fragment fragment = (Fragment) ARouter.getInstance().build("/test/fragment").navigation();
+
+//fragment 的类需要有@ObjectRoute 注解，代理才能生效
+ComponentRouterProxy proxy = ComponentRouter.createProxy(fragment);
+String text=proxy.call("getText");
+```
+
 
 ### 注解使用
 

@@ -9,25 +9,33 @@ import android.widget.Toast;
 
 import com.wrbug.componentrouter.ComponentRouter;
 import com.wrbug.componentrouter.ComponentRouterInstance;
+import com.wrbug.componentrouter.ComponentRouterProxy;
 
 public class MainActivity extends AppCompatActivity {
-    ComponentRouterInstance build;
+    ComponentRouterInstance aFragmentProxy;
+    ComponentRouterInstance bFragmentProxy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        build = ComponentRouter.build("/a/AFragment");
-        Fragment fragment = build.getInstance();
+        aFragmentProxy = ComponentRouter.build("/a/AFragment");
+        Fragment fragment = aFragmentProxy.getInstance();
         if (fragment != null) {
             getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commitAllowingStateLoss();
         }
+        bFragmentProxy = ComponentRouter.build("/b/bfragment");
+        fragment = bFragmentProxy.getInstance();
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commitAllowingStateLoss();
+        }
+
     }
 
 
     public void onGetTextClick(View view) {
-        String text = build.getProxy().call("getText");
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+        String text = aFragmentProxy.getProxy().call("getText");
+        bFragmentProxy.getProxy().call("setText", text);
     }
 
     public void onSaveUserClick(View view) {

@@ -11,6 +11,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)
 public @interface ObjectRoute {
+
+    /**
+     * application 初始化path
+     */
+    String APPLICATION_PATH="application";
     /**
      * 类 path，不得为空
      * <p>

@@ -1,7 +1,7 @@
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
-version = "1.0.1"
+version = "1.0.2"
 project.archivesBaseName = PROJ_ARTIFACTID
 
 def siteUrl = 'https://github.com/WrBug/componentrouter'

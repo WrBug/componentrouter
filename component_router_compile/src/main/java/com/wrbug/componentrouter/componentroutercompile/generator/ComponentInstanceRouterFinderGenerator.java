@@ -75,7 +75,7 @@ public class ComponentInstanceRouterFinderGenerator implements Generator {
                         .endControlFlow();
             }
         }
-        getMethodBuilder.addStatement("return $T.getDefault()", DefaultComponentRouterInstance.class);
+        getMethodBuilder.addStatement("return null");
         builder.addMethod(getMethodBuilder.build());
         JavaFile javaFile = JavaFile.builder(PACKAGE_NAME, builder.build()).build();
         try {
