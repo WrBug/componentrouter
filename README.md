@@ -30,7 +30,7 @@ annotationProcessor "com.wrbug.componentrouter:compile:$version"
 
 application 初始化
 
-```
+``` java
 @ObjectRoute(ObjectRoute.APPLICATION_PATH)
 public class App extends Application {
     private static App instance;
@@ -148,7 +148,7 @@ String username = build.getProxy().call("getUsername");
 
 如果您已经通过第三方框架获取到Fragment实例，可以通过下面的方式使用服务
 
-```
+``` java
 // 使用获取到Fragment
 Fragment fragment = (Fragment) ARouter.getInstance().build("/test/fragment").navigation();
 
