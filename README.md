@@ -7,7 +7,10 @@
 
 #### 添加依赖
 
-最新版本：`1.0.2`
+##### 最新版本
+模块|componentrouter|
+---|---
+最新版本|[![Download](https://api.bintray.com/packages/wrbug/maven/componentrouter/images/download.svg)](https://bintray.com/wrbug/maven/componentrouter/_latestVersion)
 
  工程根目录`build.gradle`下添加：
 
