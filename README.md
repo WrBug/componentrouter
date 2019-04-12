@@ -31,7 +31,7 @@ annotationProcessor "com.wrbug.componentrouter:compile:$version"
 ```
 
 
-application 初始化
+Application 初始化
 
 ``` java
 @ObjectRoute(ObjectRoute.APPLICATION_PATH)
@@ -50,6 +50,13 @@ public class App extends Application {
         return instance;
     }
 }
+```
+
+Application 初始化完成后，你可以在任意地方获取Application代理
+
+``` java 
+  ComponentRouterInstance routerInstance = ComponentRouter.getApplication(); 
+  Application app= routerInstance.getInstance();
 ```
 
 

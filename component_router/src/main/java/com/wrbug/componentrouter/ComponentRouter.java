@@ -19,6 +19,15 @@ public class ComponentRouter {
     }
 
     /**
+     * 获取Application
+     *
+     * @return
+     */
+    public static ComponentRouterInstance getApplication() {
+        return build(ObjectRoute.APPLICATION_PATH);
+    }
+
+    /**
      * @param path       {@link ObjectRoute } path
      * @param parameters {@link ConstructorRouter} or {@link SingletonRouter} parameters
      * @return
